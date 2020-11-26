@@ -2,19 +2,21 @@ package main
 
 import "strings"
 
-type BPMNFlow struct{
+type Element struct{
 
 	bpmn *BPMN
 	Element interface{}
 	elemId string
+	outGoings []string
 }
 
 
-func (self * BPMNFlow) find(){
+func (self * Element) find(){
 	if self.GetType()=="Gateway" {
 		for _, el := range self.bpmn.Process.ExclusiveGateway {
 			if el.ID == self.elemId {
 				self.Element = &el
+				self.outGoings=el.Outgoing
 				break
 			}
 		}
@@ -22,6 +24,8 @@ func (self * BPMNFlow) find(){
 		for _, el := range self.bpmn.Process.Task {
 			if el.ID == self.elemId {
 				self.Element = &el
+				self.outGoings=el.Outgoing
+
 				break
 			}
 		}
@@ -32,12 +36,19 @@ func (self * BPMNFlow) find(){
 				break
 			}
 		}
+	}else 	if self.GetType()=="Event" {
+		for _, el := range self.bpmn.Process.EndEvent {
+			if el.ID == self.elemId {
+				self.Element = &el
+				break
+			}
+		}
 	}
 }
-func (self * BPMNFlow)GetBPMN() *BPMN{
+func (self * Element)GetBPMN() *BPMN{
 	return self.bpmn
 }
-func (self * BPMNFlow) LoadObjElement(id string,bpmn *BPMN) {
+func (self * Element) LoadObjElement(id string,bpmn *BPMN) {
 	self.bpmn = bpmn
 	self.elemId= id
 	if self.Element==nil {
@@ -47,7 +58,7 @@ func (self * BPMNFlow) LoadObjElement(id string,bpmn *BPMN) {
 
 }
 
-func (self * BPMNFlow) GetType() string{
+func (self * Element) GetType() string{
 	if self.elemId!=""{
 		return strings.Split(self.elemId,"_")[0]
 	}else {
@@ -56,6 +67,10 @@ func (self * BPMNFlow) GetType() string{
 }
 
 
-func ( self * BPMNFlow)GetElement() interface{}{
+func ( self * Element)GetElement() interface{}{
 	return self.Element
+}
+
+func ( self * Element)GetOutGoings() []string{
+	return self.outGoings
 }

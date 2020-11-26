@@ -36,6 +36,8 @@ type Task struct {
 	TestStatus        string `xml:"testStatus,attr"`
 	ExtensionElements string `xml:"extensionElements"`
 	Incoming          []string `xml:"incoming"`
+	Outgoing []string `xml:"outgoing"`
+
 }
 type StartEvent struct {
 	Text     string `xml:",chardata"`
@@ -60,7 +62,7 @@ type BPMN struct {
 		StartEvent StartEvent `xml:"startEvent"`
 		ExclusiveGateway []ExclusiveGateway `xml:"exclusiveGateway"`
 		SequenceFlow []SequenceFlow `xml:"sequenceFlow"`
-		EndEvent EndEvent `xml:"endEvent"`
+		EndEvent []EndEvent `xml:"endEvent"`
 		Task []Task `xml:"task"`
 	} `xml:"process"`
 	BPMNDiagram struct {
@@ -116,6 +118,7 @@ type BPMNElement interface{
 	GetElement() interface{}
 	LoadObjElement(id string,bpmn *BPMN)
 
+
 }
 
 
@@ -152,21 +155,49 @@ func (self * Bpmn) GetBPMN(path string) (*BPMN,error) {
 	return self.refrence,nil
 
 }
-
-func (self * Bpmn)GetStartElement() []BPMNElement{
-	el:=make([]BPMNElement,0)
-
-	for _,target:=range self.refrence.Process.StartEvent.Outgoing {
-		f:=new(BPMNFlow)
+func (self * Bpmn) GetStartElement() interface{} {
+	return self.refrence.Process.StartEvent
+}
+func (self  * Bpmn) ForwardElement(elemId string) []BPMNElement{
+	els:=make([]BPMNElement,0)
+	el:=new(Element)
+	el.LoadObjElement(elemId,self.refrence)
+	for _,target:=range el.GetOutGoings() {
+		f:=new(Element)
 		f.LoadObjElement(target,self.refrence)
 		NextElem:= strings.Split(f.Element.(*SequenceFlow).TargetRef,"_")[0]
 		switch NextElem {
 		case "Gateway":
-			gateway:=new(BPMNFlow)
+			gateway:=new(Element)
+			gateway.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
+			els=append(els,gateway)
+		case "Activity":
+			task:=new(Element)
+			task.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
+			els=append(els,task)
+		case "Event":
+			event:=new(Element)
+			event.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
+			els=append(els,event)
+
+		}
+	}
+	return els
+}
+func (self * Bpmn)Start() []BPMNElement{
+	el:=make([]BPMNElement,0)
+
+	for _,target:=range self.refrence.Process.StartEvent.Outgoing {
+		f:=new(Element)
+		f.LoadObjElement(target,self.refrence)
+		NextElem:= strings.Split(f.Element.(*SequenceFlow).TargetRef,"_")[0]
+		switch NextElem {
+		case "Gateway":
+			gateway:=new(Element)
 			gateway.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
 			el=append(el,gateway)
 		case "Activity":
-			task:=new(BPMNFlow)
+			task:=new(Element)
 			task.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
 			el=append(el,task)
 		}

@@ -1,22 +1,36 @@
 package main
+func CheckProperty(els []BPMNElement,bpmn *Bpmn){
+	var node string
+	println(len(els))
+	for _,el:=range els {
+		switch el.GetType() {
+		case "Gateway":
+			node=el.GetElement().(*ExclusiveGateway).ID
 
+		case "Activity":
+			node= el.GetElement().(*Task).ID
+		case "Event":
+			node = el.GetElement().(*EndEvent).ID
+
+		}
+		println(node)
+		getFirstStep:=bpmn.ForwardElement(node)
+		CheckProperty(getFirstStep,bpmn)
+	}
+}
 func main() {
 	// Open our xmlFile
 err,bpmn:=NewBPMN("export.bpmn")
 	if err!=nil {
 		panic(err)
 	}
-	getFirstStep:=bpmn.GetStartElement()
-	for _,el:=range getFirstStep{
-		switch el.GetType() {
-		case "Gateway":
-			println(el.GetElement().(*ExclusiveGateway).ID)
-		case "Activity":
-			println(el.GetElement().(*Task).ID)
+	getFirstStep:=bpmn.Start()
+	//getFirstStep:=bpmn.ForwardElement("Gateway_1m81s2i")
 
-		}
 
-	}
+	CheckProperty(getFirstStep,bpmn)
+
+
 	//for _,v:=range bpmn.Process.Task{
 	//	println(v.ID)
 	//}
