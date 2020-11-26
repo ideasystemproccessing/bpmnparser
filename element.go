@@ -5,16 +5,32 @@ import "strings"
 type BPMNFlow struct{
 
 	bpmn *BPMN
-	Element *SequenceFlow
+	Element interface{}
 	elemId string
 }
 
 
 func (self * BPMNFlow) find(){
-	for _, el:=range self.bpmn.Process.SequenceFlow{
-		if el.ID==self.elemId {
-			self.Element=&el
-			break
+	if self.GetType()=="Gateway" {
+		for _, el := range self.bpmn.Process.ExclusiveGateway {
+			if el.ID == self.elemId {
+				self.Element = &el
+				break
+			}
+		}
+	}else if self.GetType()=="Activity" {
+		for _, el := range self.bpmn.Process.Task {
+			if el.ID == self.elemId {
+				self.Element = &el
+				break
+			}
+		}
+	} else 	if self.GetType()=="Flow" {
+		for _, el := range self.bpmn.Process.SequenceFlow {
+			if el.ID == self.elemId {
+				self.Element = &el
+				break
+			}
 		}
 	}
 }

@@ -159,15 +159,15 @@ func (self * Bpmn)GetStartElement() []BPMNElement{
 	for _,target:=range self.refrence.Process.StartEvent.Outgoing {
 		f:=new(BPMNFlow)
 		f.LoadObjElement(target,self.refrence)
-		NextElem:= strings.Split(f.Element.TargetRef,"_")[0]
+		NextElem:= strings.Split(f.Element.(*SequenceFlow).TargetRef,"_")[0]
 		switch NextElem {
 		case "Gateway":
-			gateway:=new(BPMNGateWay)
-			gateway.LoadObjElement(f.Element.TargetRef,self.refrence)
+			gateway:=new(BPMNFlow)
+			gateway.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
 			el=append(el,gateway)
 		case "Activity":
-			task:=new(BPMNTask)
-			task.LoadObjElement(f.Element.TargetRef,self.refrence)
+			task:=new(BPMNFlow)
+			task.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
 			el=append(el,task)
 		}
 	}
