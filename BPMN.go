@@ -21,12 +21,18 @@ type ExclusiveGateway struct {
 type SequenceFlow struct {
 	Text      string `xml:",chardata"`
 	ID        string `xml:"id,attr"`
+	RuleCondition     string `xml:"ruleCondition,attr"`
+	TestStatus        string `xml:"testStatus,attr"`
+	ExtensionElements string `xml:"extensionElements"`
 	SourceRef string `xml:"sourceRef,attr"`
 	TargetRef string `xml:"targetRef,attr"`
 }
 type EndEvent struct {
 	Text     string `xml:",chardata"`
 	ID       string `xml:"id,attr"`
+	RuleCondition     string `xml:"ruleCondition,attr"`
+	TestStatus        string `xml:"testStatus,attr"`
+	ExtensionElements string `xml:"extensionElements"`
 	Incoming          []string `xml:"incoming"`
 }
 type Task struct {
@@ -40,6 +46,9 @@ type Task struct {
 
 }
 type StartEvent struct {
+	RuleCondition     string `xml:"ruleCondition,attr"`
+	TestStatus        string `xml:"testStatus,attr"`
+	ExtensionElements string `xml:"extensionElements"`
 	Text     string `xml:",chardata"`
 	ID       string `xml:"id,attr"`
 	Outgoing []string `xml:"outgoing"`
@@ -112,14 +121,6 @@ type BPMN struct {
 	} `xml:"BPMNDiagram"`
 }
 
-type BPMNElement interface{
-
-	GetType() string
-	GetElement() interface{}
-	LoadObjElement(id string,bpmn *BPMN)
-
-
-}
 
 
 type Bpmn struct {
@@ -155,54 +156,44 @@ func (self * Bpmn) GetBPMN(path string) (*BPMN,error) {
 	return self.refrence,nil
 
 }
-func (self * Bpmn) GetStartElement() interface{} {
+func (self * Bpmn) GetStartElement() StartEvent {
 	return self.refrence.Process.StartEvent
 }
-func (self  * Bpmn) ForwardElement(elemId string) []BPMNElement{
-	els:=make([]BPMNElement,0)
+func (self  * Bpmn) ForwardElement(elemId string) []*Element{
+	els:=make([]*Element,0)
 	el:=new(Element)
 	el.LoadObjElement(elemId,self.refrence)
+
 	for _,target:=range el.GetOutGoings() {
 		f:=new(Element)
 		f.LoadObjElement(target,self.refrence)
+		// TestStatus must be Changed To BoolVal
+		prevState:=f.Element.(*SequenceFlow).TestStatus
 		NextElem:= strings.Split(f.Element.(*SequenceFlow).TargetRef,"_")[0]
 		switch NextElem {
 		case "Gateway":
 			gateway:=new(Element)
+			gateway.PrevState = prevState
+			// If f.Element.(*SequenceFlow). ruleStatus is true or false Set On gateway State
+			//gateway.GetElement().()= f.Element.(*SequenceFlow).TestStatus
 			gateway.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
 			els=append(els,gateway)
 		case "Activity":
 			task:=new(Element)
+			// If f.Element.(*SequenceFlow). ruleStatus is true or false Set On activity State
+			task.PrevState = prevState
 			task.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
 			els=append(els,task)
 		case "Event":
 			event:=new(Element)
+			// If f.Element.(*SequenceFlow). ruleStatus is true or false Set On Event State
+			event.PrevState = prevState
 			event.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
 			els=append(els,event)
 
 		}
 	}
 	return els
-}
-func (self * Bpmn)Start() []BPMNElement{
-	el:=make([]BPMNElement,0)
-
-	for _,target:=range self.refrence.Process.StartEvent.Outgoing {
-		f:=new(Element)
-		f.LoadObjElement(target,self.refrence)
-		NextElem:= strings.Split(f.Element.(*SequenceFlow).TargetRef,"_")[0]
-		switch NextElem {
-		case "Gateway":
-			gateway:=new(Element)
-			gateway.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
-			el=append(el,gateway)
-		case "Activity":
-			task:=new(Element)
-			task.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
-			el=append(el,task)
-		}
-	}
-	return el
 }
 
 func NewBPMN(path string) (error , *Bpmn) {

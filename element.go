@@ -1,6 +1,8 @@
 package main
 
-import "strings"
+import (
+	"strings"
+)
 
 type Element struct{
 
@@ -8,6 +10,7 @@ type Element struct{
 	Element interface{}
 	elemId string
 	outGoings []string
+	PrevState string
 }
 
 
@@ -39,10 +42,17 @@ func (self * Element) find(){
 	}else 	if self.GetType()=="Event" {
 		for _, el := range self.bpmn.Process.EndEvent {
 			if el.ID == self.elemId {
+
 				self.Element = &el
 				break
 			}
 		}
+			if self.bpmn.Process.StartEvent.ID == self.elemId {
+				self.Element = &self.bpmn.Process.StartEvent
+				self.outGoings= self.bpmn.Process.StartEvent.Outgoing
+			}
+
+
 	}
 }
 func (self * Element)GetBPMN() *BPMN{
