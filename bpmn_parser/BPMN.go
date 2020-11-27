@@ -15,15 +15,19 @@ type ExclusiveGateway struct {
 	ExtensionElements string   `xml:"extensionElements"`
 	Incoming          []string   `xml:"incoming"`
 	Outgoing          []string `xml:"outgoing"`
+	Name     string `xml:"name,attr"`
+
 }
 
 
 type SequenceFlow struct {
 	Text      string `xml:",chardata"`
 	ID        string `xml:"id,attr"`
+
 	RuleCondition     string `xml:"ruleCondition,attr"`
 	TestStatus        string `xml:"testStatus,attr"`
 	ExtensionElements string `xml:"extensionElements"`
+	Name     string `xml:"name,attr"`
 	SourceRef string `xml:"sourceRef,attr"`
 	TargetRef string `xml:"targetRef,attr"`
 }
@@ -34,6 +38,8 @@ type EndEvent struct {
 	TestStatus        string `xml:"testStatus,attr"`
 	ExtensionElements string `xml:"extensionElements"`
 	Incoming          []string `xml:"incoming"`
+	Name     string `xml:"name,attr"`
+
 }
 type Task struct {
 	Text              string `xml:",chardata"`
@@ -42,6 +48,7 @@ type Task struct {
 	TestStatus        string `xml:"testStatus,attr"`
 	ExtensionElements string `xml:"extensionElements"`
 	Incoming          []string `xml:"incoming"`
+	Name     string `xml:"name,attr"`
 	Outgoing []string `xml:"outgoing"`
 
 }
@@ -51,6 +58,7 @@ type StartEvent struct {
 	ExtensionElements string `xml:"extensionElements"`
 	Text     string `xml:",chardata"`
 	ID       string `xml:"id,attr"`
+	Name     string `xml:"name,attr"`
 	Outgoing []string `xml:"outgoing"`
 
 }

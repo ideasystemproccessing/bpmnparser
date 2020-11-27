@@ -19,6 +19,7 @@ type Element struct{
 	ElemId string
 	elemType string
 	outGoings []string
+	inComes	[]string
 	PrevState *SequenceFlow
 }
 
@@ -31,6 +32,7 @@ func (self * Element) find(){
 				self.elemType=GATEWAY
 
 				self.outGoings=el.Outgoing
+				self.inComes=el.Incoming
 				break
 			}
 		}
@@ -40,6 +42,7 @@ func (self * Element) find(){
 				self.elemType=TASK
 				self.Element = &el
 				self.outGoings=el.Outgoing
+				self.inComes=el.Incoming
 
 				break
 			}
@@ -49,6 +52,7 @@ func (self * Element) find(){
 			if el.ID == self.ElemId {
 				self.elemType=FLOW
 				self.Element = &el
+
 				break
 			}
 		}
@@ -56,6 +60,7 @@ func (self * Element) find(){
 		for _, el := range self.bpmn.Process.EndEvent {
 			if el.ID == self.ElemId {
 				self.elemType=END_EVENT
+				self.inComes=el.Incoming
 
 				self.Element = &el
 				break
@@ -65,6 +70,7 @@ func (self * Element) find(){
 				self.elemType=START_EVENT
 				self.Element = &self.bpmn.Process.StartEvent
 				self.outGoings= self.bpmn.Process.StartEvent.Outgoing
+
 			}
 
 
@@ -100,4 +106,7 @@ func ( self * Element)GetElement() interface{}{
 
 func ( self * Element)GetOutGoings() []string{
 	return self.outGoings
+}
+func ( self * Element)GetIncomes() []string{
+	return self.inComes
 }
