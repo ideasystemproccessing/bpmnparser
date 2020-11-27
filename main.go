@@ -101,8 +101,8 @@ func DiagValidate(els []*bpmn_parser.Element,bpmn *bpmn_parser.Bpmn,proc *Condit
 	for _,el:=range els {
 		if el.PrevState!=nil {
 			if strings.Split(el.PrevState.SourceRef,"_")[0]=="Gateway"{
-				if el.PrevState.Name!="Y" || el.PrevState.Name!="N"{
-					Errors=append(Errors,"The names of the Arrows must be `N` or `Y` : "+el.PrevState.ID)
+				if el.PrevState.Name!="Y" && el.PrevState.Name!="N"{
+					Errors=append(Errors,"The names of the Arrows must be `N` or `Y` : "+el.PrevState.Name)
 				}
 			}
 		}
@@ -132,7 +132,7 @@ func DiagValidate(els []*bpmn_parser.Element,bpmn *bpmn_parser.Bpmn,proc *Condit
 			if len(el.GetOutGoings())==1{
 				typeOfNext:=strings.Split(el.GetOutGoings()[0],"_")[0]
 				if typeOfNext=="Activity" {
-					Errors = append(Errors, "This element can only have Gateway or EndEvent connections : "+node)
+					Errors = append(Errors, "This element can only have Gateway or `Terminate Event` connections : "+node)
 				}
 			}else if len(el.GetOutGoings())>1{
 				Errors=append(Errors,"The minimum number of Task  is one Connection : "+node)

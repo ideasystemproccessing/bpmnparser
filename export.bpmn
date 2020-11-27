@@ -31,12 +31,12 @@
     <task id="Activity_1fjhkul">
       <incoming>Flow_0hlrnyf</incoming>
     </task>
-    <sequenceFlow id="Flow_0hlrnyf" sourceRef="Gateway_01j2ip7" targetRef="Activity_1fjhkul" />
+    <sequenceFlow id="Flow_0hlrnyf" name="Y" sourceRef="Gateway_01j2ip7" targetRef="Activity_1fjhkul" />
     <task id="Activity_035ai35">
       <incoming>Flow_11mxd1p</incoming>
       <outgoing>Flow_1t1ranp</outgoing>
     </task>
-    <sequenceFlow id="Flow_11mxd1p" sourceRef="Gateway_01j2ip7" targetRef="Activity_035ai35" />
+    <sequenceFlow id="Flow_11mxd1p" name="N" sourceRef="Gateway_01j2ip7" targetRef="Activity_035ai35" />
     <exclusiveGateway id="Gateway_04wr7rk">
       <incoming>Flow_1t1ranp</incoming>
       <outgoing>Flow_1b2y7vr</outgoing>
