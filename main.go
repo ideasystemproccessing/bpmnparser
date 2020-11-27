@@ -21,6 +21,7 @@ func CheckProperty(els []*Element,bpmn *Bpmn,proc *ConditionFlowElement){
 		println(node)
 		println(el.PrevState.TestStatus)
 		new_proc.ConditionType=el.elemId
+		new_proc.ElementType=el.GetElemType()
 		if el.PrevState.TestStatus=="true"{
 			proc.TrueState = new_proc
 		}else if el.PrevState.TestStatus =="false" {
@@ -29,7 +30,7 @@ func CheckProperty(els []*Element,bpmn *Bpmn,proc *ConditionFlowElement){
 		}else {
 			proc.Next=append(proc.Next,new_proc)
 		}
-		//
+
 		getFirstStep:=bpmn.ForwardElement(node)
 		CheckProperty(getFirstStep,bpmn,new_proc)
 	}
@@ -44,7 +45,7 @@ func main() {
 	getFirstStep:=bpmn.ForwardElement(bpmn.GetStartElement().ID)
 	proc:=new(ConditionFlowElement)
 	proc.ConditionType=bpmn.GetStartElement().ID
-
+	proc.ElementType=START_EVENT
 	CheckProperty(getFirstStep, bpmn,proc)
 	v,err:=jsoniter.Marshal(proc)
 	if err!=nil{

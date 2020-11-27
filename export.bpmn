@@ -11,7 +11,7 @@
       <outgoing>Flow_1l9snx2</outgoing>
       <outgoing>Flow_1x8nvut</outgoing>
     </exclusiveGateway>
-    <sequenceFlow id="Flow_09ah467" sourceRef="Event_1rper12" targetRef="Gateway_1m81s2i" />
+    <sequenceFlow id="Flow_09ah467" sourceRef="Event_1rper12" targetRef="Gateway_1m81s2i" rules:testStatus="true"/>
     <endEvent id="Event_0hybz82">
       <incoming>Flow_15nt4of</incoming>
     </endEvent>

@@ -19,6 +19,7 @@ type Value struct {
 type ConditionFlowElement struct {
 	ConditionType string      `json:"condition_type"   bson:"condition_type"`
 	ConditionID   int64       `json:"condition_id"   bson:"condition_id"`
+	ElementType   string      `json:"element_type"   bson:"element_type"`
 	TrueState     *ConditionFlowElement `json:"true_state"   bson:"true_state"`
 	FalseState    *ConditionFlowElement `json:"false_state"   bson:"false_state"`
 	Next          []*ConditionFlowElement `json:"next"   bson:"next"`

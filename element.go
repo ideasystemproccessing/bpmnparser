@@ -3,12 +3,21 @@ package main
 import (
 	"strings"
 )
+const(
+	GATEWAY string =  "Bool_Condition"
+	FLOW	string = "Arrow"
+	TASK	string = "Operation"
+	END_EVENT string = "End"
+	START_EVENT string = "Start"
+
+)
 
 type Element struct{
 
 	bpmn *BPMN
 	Element interface{}
 	elemId string
+	elemType string
 	outGoings []string
 	PrevState *SequenceFlow
 }
@@ -19,6 +28,8 @@ func (self * Element) find(){
 		for _, el := range self.bpmn.Process.ExclusiveGateway {
 			if el.ID == self.elemId {
 				self.Element = &el
+				self.elemType=GATEWAY
+
 				self.outGoings=el.Outgoing
 				break
 			}
@@ -26,6 +37,7 @@ func (self * Element) find(){
 	}else if self.GetType()=="Activity" {
 		for _, el := range self.bpmn.Process.Task {
 			if el.ID == self.elemId {
+				self.elemType=TASK
 				self.Element = &el
 				self.outGoings=el.Outgoing
 
@@ -35,6 +47,7 @@ func (self * Element) find(){
 	} else 	if self.GetType()=="Flow" {
 		for _, el := range self.bpmn.Process.SequenceFlow {
 			if el.ID == self.elemId {
+				self.elemType=FLOW
 				self.Element = &el
 				break
 			}
@@ -42,12 +55,14 @@ func (self * Element) find(){
 	}else 	if self.GetType()=="Event" {
 		for _, el := range self.bpmn.Process.EndEvent {
 			if el.ID == self.elemId {
+				self.elemType=END_EVENT
 
 				self.Element = &el
 				break
 			}
 		}
 			if self.bpmn.Process.StartEvent.ID == self.elemId {
+				self.elemType=START_EVENT
 				self.Element = &self.bpmn.Process.StartEvent
 				self.outGoings= self.bpmn.Process.StartEvent.Outgoing
 			}
@@ -76,7 +91,9 @@ func (self * Element) GetType() string{
 	}
 }
 
-
+func (self * Element)GetElemType() string{
+	return self.elemType
+}
 func ( self * Element)GetElement() interface{}{
 	return self.Element
 }
