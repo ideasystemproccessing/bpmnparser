@@ -11,22 +11,44 @@ func CheckProperty(els []*bpmn_parser.Element,bpmn *bpmn_parser.Bpmn,proc *Condi
 
 	for _,el:=range els {
 		new_proc:=new(ConditionFlowElement)
+		param:=new(BpmnRuleCondition)
 		switch el.GetType() {
 		case "Gateway":
 			node=el.GetElement().(*bpmn_parser.ExclusiveGateway).ID
-			new_proc.ConditionParams=el.Element.(*bpmn_parser.ExclusiveGateway).RuleCondition
+			if el.Element.(*bpmn_parser.ExclusiveGateway).RuleCondition!="" {
+
+				err := jsoniter.Unmarshal([]byte(el.Element.(*bpmn_parser.ExclusiveGateway).RuleCondition), param)
+				if err != nil {
+					panic(err)
+				}
+			}else {
+				param=nil
+			}
 		case "Activity":
 			node= el.GetElement().(*bpmn_parser.Task).ID
-			new_proc.ConditionParams=el.Element.(*bpmn_parser.Task).RuleCondition
+			if el.Element.(*bpmn_parser.Task).RuleCondition!="" {
 
+				err := jsoniter.Unmarshal([]byte(el.Element.(*bpmn_parser.Task).RuleCondition), param)
+				if err != nil {
+					panic(err)
+				}
+			}else {
+				param=nil
+			}
 		case "Event":
 			node = el.GetElement().(*bpmn_parser.EndEvent).ID
-			new_proc.ConditionParams=el.Element.(*bpmn_parser.EndEvent).RuleCondition
-
+			if el.Element.(*bpmn_parser.EndEvent).RuleCondition!="" {
+				err := jsoniter.Unmarshal([]byte(el.Element.(*bpmn_parser.EndEvent).RuleCondition), param)
+				if err != nil {
+					panic(err)
+				}
+			}else {
+				param=nil
+			}
 		}
 		println(node)
 		println(el.PrevState.TestStatus)
-
+		new_proc.ConditionParams=param
 		new_proc.ConditionType=el.ElemId
 		new_proc.ElementType=el.GetElemType()
 		if el.PrevState.TestStatus=="true"{
