@@ -11,21 +11,21 @@
       <outgoing>Flow_1l9snx2</outgoing>
       <outgoing>Flow_1x8nvut</outgoing>
     </exclusiveGateway>
-    <sequenceFlow id="Flow_09ah467" sourceRef="Event_1rper12" targetRef="Gateway_1m81s2i" rules:testStatus="true"/>
+    <sequenceFlow id="Flow_09ah467" sourceRef="Event_1rper12" targetRef="Gateway_1m81s2i" />
     <endEvent id="Event_0hybz82">
       <incoming>Flow_15nt4of</incoming>
     </endEvent>
-    <sequenceFlow id="Flow_15nt4of" sourceRef="Gateway_1m81s2i" targetRef="Event_0hybz82" />
+    <sequenceFlow id="Flow_15nt4of" sourceRef="Gateway_1m81s2i" targetRef="Event_0hybz82"  />
     <task id="Activity_1rlsot6" jrules:ruleCondition="{&#34;type&#34;:&#34;condition&#34;,&#34;condition_id&#34;:1,&#34;values&#34;:&#34;SetupBox&#34;}" jrules:testStatus="true">
       <extensionElements />
       <incoming>Flow_1l9snx2</incoming>
     </task>
-    <sequenceFlow id="Flow_1l9snx2" sourceRef="Gateway_1m81s2i" targetRef="Activity_1rlsot6" />
+    <sequenceFlow id="Flow_1l9snx2" sourceRef="Gateway_1m81s2i" targetRef="Activity_1rlsot6" rules:testStatus="true"/>
     <task id="Activity_1bwx0k7">
       <incoming>Flow_1x8nvut</incoming>
       <outgoing>Flow_1uf71vo</outgoing>
     </task>
-    <sequenceFlow id="Flow_1x8nvut" sourceRef="Gateway_1m81s2i" targetRef="Activity_1bwx0k7" />
+    <sequenceFlow id="Flow_1x8nvut" sourceRef="Gateway_1m81s2i" targetRef="Activity_1bwx0k7" rules:testStatus="false"/>
     <exclusiveGateway id="Gateway_10pqqee">
       <incoming>Flow_1uf71vo</incoming>
       <outgoing>Flow_09on01x</outgoing>

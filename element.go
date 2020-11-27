@@ -10,7 +10,7 @@ type Element struct{
 	Element interface{}
 	elemId string
 	outGoings []string
-	PrevState string
+	PrevState *SequenceFlow
 }
 
 

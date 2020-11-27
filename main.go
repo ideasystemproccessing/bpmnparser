@@ -7,8 +7,9 @@ import (
 func CheckProperty(els []*Element,bpmn *Bpmn,proc *ConditionFlowElement){
 	var node string
 	println(len(els))
-	new_proc:=new(ConditionFlowElement)
+
 	for _,el:=range els {
+		new_proc:=new(ConditionFlowElement)
 		switch el.GetType() {
 		case "Gateway":
 			node=el.GetElement().(*ExclusiveGateway).ID
@@ -18,16 +19,16 @@ func CheckProperty(els []*Element,bpmn *Bpmn,proc *ConditionFlowElement){
 			node = el.GetElement().(*EndEvent).ID
 		}
 		println(node)
-		println(el.PrevState)
-		if el.PrevState=="true"{
+		println(el.PrevState.TestStatus)
+		new_proc.ConditionType=el.elemId
+		if el.PrevState.TestStatus=="true"{
 			proc.TrueState = new_proc
-		}else if el.PrevState =="false" {
-			proc.TrueState = proc
+		}else if el.PrevState.TestStatus =="false" {
+			proc.FalseState = new_proc
 
 		}else {
 			proc.Next=append(proc.Next,new_proc)
 		}
-		proc.ConditionType=node
 		//
 		getFirstStep:=bpmn.ForwardElement(node)
 		CheckProperty(getFirstStep,bpmn,new_proc)
@@ -42,12 +43,13 @@ func main() {
 	//getFirstStep := bpmn.Start()
 	getFirstStep:=bpmn.ForwardElement(bpmn.GetStartElement().ID)
 	proc:=new(ConditionFlowElement)
+	proc.ConditionType=bpmn.GetStartElement().ID
+
 	CheckProperty(getFirstStep, bpmn,proc)
 	v,err:=jsoniter.Marshal(proc)
 	if err!=nil{
 		panic(err)
 	}
-
 
 	fmt.Println(string(v))
 

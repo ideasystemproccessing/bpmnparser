@@ -168,7 +168,7 @@ func (self  * Bpmn) ForwardElement(elemId string) []*Element{
 		f:=new(Element)
 		f.LoadObjElement(target,self.refrence)
 		// TestStatus must be Changed To BoolVal
-		prevState:=f.Element.(*SequenceFlow).TestStatus
+		prevState:=f.Element.(*SequenceFlow)
 		NextElem:= strings.Split(f.Element.(*SequenceFlow).TargetRef,"_")[0]
 		switch NextElem {
 		case "Gateway":
