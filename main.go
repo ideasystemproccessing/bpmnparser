@@ -7,7 +7,7 @@ import (
 )
 func CheckProperty(els []*bpmn_parser.Element,bpmn *bpmn_parser.Bpmn,proc *ConditionFlowElement){
 	var node string
-	println(len(els))
+	//println(len(els))
 
 	for _,el:=range els {
 		new_proc:=new(ConditionFlowElement)
@@ -46,8 +46,8 @@ func CheckProperty(els []*bpmn_parser.Element,bpmn *bpmn_parser.Bpmn,proc *Condi
 				param=nil
 			}
 		}
-		println(node)
-		println(el.PrevState.TestStatus)
+		//println(node)
+		//println(el.PrevState.TestStatus)
 		new_proc.ConditionParams=param
 		new_proc.ConditionType=el.ElemId
 		new_proc.ElementType=el.GetElemType()
