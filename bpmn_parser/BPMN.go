@@ -1,4 +1,4 @@
-package main
+package bpmn_parser
 
 import (
 	"encoding/xml"
@@ -159,7 +159,7 @@ func (self * Bpmn) GetBPMN(path string) (*BPMN,error) {
 func (self * Bpmn) GetStartElement() StartEvent {
 	return self.refrence.Process.StartEvent
 }
-func (self  * Bpmn) ForwardElement(elemId string) []*Element{
+func (self  * Bpmn) ForwardElement(elemId string) []*Element {
 	els:=make([]*Element,0)
 	el:=new(Element)
 	el.LoadObjElement(elemId,self.refrence)
@@ -167,26 +167,22 @@ func (self  * Bpmn) ForwardElement(elemId string) []*Element{
 	for _,target:=range el.GetOutGoings() {
 		f:=new(Element)
 		f.LoadObjElement(target,self.refrence)
-		// TestStatus must be Changed To BoolVal
+
 		prevState:=f.Element.(*SequenceFlow)
 		NextElem:= strings.Split(f.Element.(*SequenceFlow).TargetRef,"_")[0]
 		switch NextElem {
 		case "Gateway":
 			gateway:=new(Element)
 			gateway.PrevState = prevState
-			// If f.Element.(*SequenceFlow). ruleStatus is true or false Set On gateway State
-			//gateway.GetElement().()= f.Element.(*SequenceFlow).TestStatus
 			gateway.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
 			els=append(els,gateway)
 		case "Activity":
 			task:=new(Element)
-			// If f.Element.(*SequenceFlow). ruleStatus is true or false Set On activity State
 			task.PrevState = prevState
 			task.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
 			els=append(els,task)
 		case "Event":
 			event:=new(Element)
-			// If f.Element.(*SequenceFlow). ruleStatus is true or false Set On Event State
 			event.PrevState = prevState
 			event.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
 			els=append(els,event)
