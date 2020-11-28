@@ -10,7 +10,8 @@ const (
 	TASK        string = "Operation"
 	END_EVENT   string = "End"
 	START_EVENT string = "Start"
-	INTER_EVENT string = "Intermediate"
+	INTER_EVENT string = "Continue"
+	TERMINATE_END_EVENT string = "Out_Of_Commitment"
 )
 
 type Element struct {
@@ -29,7 +30,6 @@ func (self *Element) find() {
 			if el.ID == self.ElemId {
 				self.Element = &el
 				self.elemType = GATEWAY
-
 				self.outGoings = el.Outgoing
 				self.inComes = el.Incoming
 				break
@@ -59,8 +59,10 @@ func (self *Element) find() {
 		for _, el := range self.bpmn.Process.EndEvent {
 			if el.ID == self.ElemId {
 				self.elemType = END_EVENT
+				if el.TerminateEventDefinition!=nil{
+					self.elemType = TERMINATE_END_EVENT
+				}
 				self.inComes = el.Incoming
-
 				self.Element = &el
 				break
 			}
@@ -69,7 +71,6 @@ func (self *Element) find() {
 			if el.ID == self.ElemId {
 				self.elemType = INTER_EVENT
 				self.inComes = el.Incoming
-
 				self.Element = &el
 				break
 			}

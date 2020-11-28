@@ -30,6 +30,11 @@ type SequenceFlow struct {
 	SourceRef string `xml:"sourceRef,attr"`
 	TargetRef string `xml:"targetRef,attr"`
 }
+type TerminateEndEvent struct {
+	Text string `xml:",chardata"`
+	ID   string `xml:"id,attr"`
+}
+
 type EndEvent struct {
 	Text     string `xml:",chardata"`
 	ID       string `xml:"id,attr"`
@@ -38,6 +43,7 @@ type EndEvent struct {
 	ExtensionElements string `xml:"extensionElements"`
 	Incoming          []string `xml:"incoming"`
 	Name     string `xml:"name,attr"`
+	TerminateEventDefinition *TerminateEndEvent `xml:"terminateEventDefinition"`
 
 }
 type Task struct {

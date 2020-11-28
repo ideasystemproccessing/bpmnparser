@@ -36,14 +36,26 @@ func ParseToJson(els []*bpmn_parser.Element,bpmn *bpmn_parser.Bpmn,proc *Conditi
 				param=nil
 			}
 		case "Event":
-			node = el.GetElement().(*bpmn_parser.EndEvent).ID
-			if el.Element.(*bpmn_parser.EndEvent).RuleCondition!="" {
-				err := jsoniter.Unmarshal([]byte(el.Element.(*bpmn_parser.EndEvent).RuleCondition), param)
-				if err != nil {
-					panic(err)
+			if endEvent,ok:=el.GetElement().(*bpmn_parser.EndEvent);ok {
+				node = endEvent.ID
+				if el.Element.(*bpmn_parser.EndEvent).RuleCondition != "" {
+					err := jsoniter.Unmarshal([]byte(endEvent.RuleCondition), param)
+					if err != nil {
+						panic(err)
+					}
+				} else {
+					param = nil
 				}
-			}else {
-				param=nil
+			}else if interEvent,ok:=el.GetElement().(*bpmn_parser.IntermediateEvent);ok{
+				node = interEvent.ID
+				if el.Element.(*bpmn_parser.IntermediateEvent).RuleCondition != "" {
+					err := jsoniter.Unmarshal([]byte(interEvent.RuleCondition), param)
+					if err != nil {
+						panic(err)
+					}
+				} else {
+					param = nil
+				}
 			}
 		}
 		//println(node)
@@ -85,7 +97,14 @@ func main() {
 	}
 
 	fmt.Println(string(v))
+	if len(bpmn.GetStartElement().Outgoing)==0{
+		Errors=append(Errors,"StartPoint Connection is required")
 
+	}
+	if len(bpmn.GetStartElement().Outgoing)>1{
+		Errors=append(Errors,"The starting point can only have one connection ")
+
+	}
 	DiagValidate(getFirstStep, bpmn,proc)
 	for _,err:=range Errors{
 		println(err)
@@ -113,27 +132,28 @@ func DiagValidate(els []*bpmn_parser.Element,bpmn *bpmn_parser.Bpmn,proc *Condit
 			if len(el.GetOutGoings())>2{
 				Errors=append(Errors,"This element should not have more than two connections : "+node)
 			}
-			for _,selection_target:=range el.GetOutGoings(){
-
-				x:=0
-				for _,target:=range el.GetOutGoings(){
-					if selection_target==target && strings.Split(target,"_")[0]!="Event"{
-						x++
-					}
-				}
-				if x>1{
-					Errors=append(Errors,"Two connections to one destination are not possible : "+node)
-
-				}
-			}
+			//for _,selection_target:=range el.GetOutGoings(){
+			//
+			//	x:=0
+			//	for _,target:=range el.GetOutGoings(){
+			//		if selection_target==target && strings.Split(target,"_")[0]!="Event"{
+			//			x++
+			//		}
+			//	}
+			//	if x>1{
+			//		Errors=append(Errors,"Two connections to one destination are not possible : "+node)
+			//
+			//	}
+			//}
 		case "Activity":
 			node= el.GetElement().(*bpmn_parser.Task).ID
-			if len(el.GetOutGoings())==1{
-				typeOfNext:=strings.Split(el.GetOutGoings()[0],"_")[0]
-				if typeOfNext=="Activity" {
-					Errors = append(Errors, "This element can only have Gateway or `Terminate Event` connections : "+node)
-				}
-			}else if len(el.GetOutGoings())>1{
+			//if len(el.GetOutGoings())==1{
+			//	typeOfNext:=strings.Split(el.GetOutGoings()[0],"_")[0]
+			//	if typeOfNext=="Activity" {
+			//		Errors = append(Errors, "This element can only have Gateway or `Terminate Event` connections : "+node)
+			//	}
+			//}else
+			if len(el.GetOutGoings())>1{
 				Errors=append(Errors,"The minimum number of Task  is one Connection : "+node)
 
 			}else if len(el.GetOutGoings())==0{
@@ -142,7 +162,13 @@ func DiagValidate(els []*bpmn_parser.Element,bpmn *bpmn_parser.Bpmn,proc *Condit
 
 
 		case "Event":
-			node = el.GetElement().(*bpmn_parser.EndEvent).ID
+			if endEvent,ok:=el.GetElement().(*bpmn_parser.EndEvent);ok {
+				node = endEvent.ID
+			}else if interEvent,ok:=el.GetElement().(*bpmn_parser.IntermediateEvent);ok {
+				node = interEvent.ID
+			}
+
+
 
 		}
 
