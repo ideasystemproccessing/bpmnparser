@@ -4,7 +4,6 @@ import (
 	"encoding/xml"
 	"io/ioutil"
 	"os"
-	"strings"
 )
 
 type ExclusiveGateway struct {
@@ -62,6 +61,21 @@ type StartEvent struct {
 	Outgoing []string `xml:"outgoing"`
 
 }
+type IntermediateEvent struct {
+	Text              string `xml:",chardata"`
+	ID                string `xml:"id,attr"`
+	RuleCondition     string `xml:"ruleCondition,attr"`
+	TestStatus        string `xml:"testStatus,attr"`
+	ExtensionElements string `xml:"extensionElements"`
+	Incoming          []string `xml:"incoming"`
+	Name     string `xml:"name,attr"`
+	Outgoing []string `xml:"outgoing"`
+	LinkEventDefinition struct {
+		Text string `xml:",chardata"`
+		ID   string `xml:"id,attr"`
+		Name string `xml:"name,attr"`
+	} `xml:"linkEventDefinition"`
+}
 type BPMN struct {
 	XMLName         xml.Name `xml:"definitions"`
 	Text            string   `xml:",chardata"`
@@ -81,6 +95,7 @@ type BPMN struct {
 		SequenceFlow []SequenceFlow `xml:"sequenceFlow"`
 		EndEvent []EndEvent `xml:"endEvent"`
 		Task []Task `xml:"task"`
+		IntermediateThrowEvent []IntermediateEvent `xml:"intermediateThrowEvent"`
 	} `xml:"process"`
 	BPMNDiagram struct {
 		Text      string `xml:",chardata"`
@@ -177,25 +192,13 @@ func (self  * Bpmn) ForwardElement(elemId string) []*Element {
 		f.LoadObjElement(target,self.refrence)
 
 		prevState:=f.Element.(*SequenceFlow)
-		NextElem:= strings.Split(f.Element.(*SequenceFlow).TargetRef,"_")[0]
-		switch NextElem {
-		case "Gateway":
-			gateway:=new(Element)
-			gateway.PrevState = prevState
-			gateway.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
-			els=append(els,gateway)
-		case "Activity":
-			task:=new(Element)
-			task.PrevState = prevState
-			task.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
-			els=append(els,task)
-		case "Event":
-			event:=new(Element)
-			event.PrevState = prevState
-			event.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
-			els=append(els,event)
 
-		}
+			elem:=new(Element)
+			elem.PrevState = prevState
+			elem.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
+			els=append(els,elem)
+
+
 	}
 	return els
 }

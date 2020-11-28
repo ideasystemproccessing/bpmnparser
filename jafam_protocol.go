@@ -2,17 +2,23 @@ package main
 
 
 type BpmnRuleCondition struct {
-	ElemType      string  `json:"elem_type"   bson:"elem_type"`
-	ConditionType string  `json:"condition_type"   bson:"condition_type"`
-	ConditionID   int64   `json:"condition_id"   bson:"condition_id"`
-	Values        string `json:"values"   bson:"values"`
-	//Values        []Value `json:"values"   bson:"values"`
+	Type   Type    `json:"type"   bson:"type"`
+	//Type   string    `json:"type"   bson:"type"`
+	Values []Value `json:"values"   bson:"values"`
+	//Values string `json:"values"   bson:"values"`
+
+}
+
+type Type struct {
+	Label string `json:"label"   bson:"label"`
+	Value int64  `json:"value"   bson:"value"`
 }
 
 type Value struct {
 	Key   string `json:"key"   bson:"key"`
 	Value string `json:"value"   bson:"value"`
 }
+
 
 
 

@@ -17,7 +17,6 @@ func ParseToJson(els []*bpmn_parser.Element,bpmn *bpmn_parser.Bpmn,proc *Conditi
 		case "Gateway":
 			node=el.GetElement().(*bpmn_parser.ExclusiveGateway).ID
 			if el.Element.(*bpmn_parser.ExclusiveGateway).RuleCondition!="" {
-
 				err := jsoniter.Unmarshal([]byte(el.Element.(*bpmn_parser.ExclusiveGateway).RuleCondition), param)
 				if err != nil {
 					panic(err)
