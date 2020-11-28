@@ -77,6 +77,7 @@ func ParseToJson(els []*bpmn_parser.Element,bpmn *bpmn_parser.Bpmn,proc *Conditi
 	}
 }
 var Errors []string
+var Paths []string
 func main() {
 	// Open our xmlFile
 	err, bpmn := bpmn_parser.NewBPMN("export.bpmn")
@@ -109,12 +110,21 @@ func main() {
 	for _,err:=range Errors{
 		println(err)
 	}
+
+	var path  string
+	path=bpmn.GetStartElement().ID+" , "
+	SuccessEndValidation(getFirstStep,bpmn,&path)
+
+	for _,s:=range Paths{
+		if strings.Contains(s,"End") || strings.Contains(s,"Out_Of_Com") {
+			fmt.Println(s)
+		}
+	}
 }
 
 
 func DiagValidate(els []*bpmn_parser.Element,bpmn *bpmn_parser.Bpmn,proc *ConditionFlowElement){
 	var node string
-	//println(len(els))
 
 	for _,el:=range els {
 		if el.PrevState!=nil {
@@ -163,9 +173,11 @@ func DiagValidate(els []*bpmn_parser.Element,bpmn *bpmn_parser.Bpmn,proc *Condit
 
 		case "Event":
 			if endEvent,ok:=el.GetElement().(*bpmn_parser.EndEvent);ok {
+
 				node = endEvent.ID
 			}else if interEvent,ok:=el.GetElement().(*bpmn_parser.IntermediateEvent);ok {
 				node = interEvent.ID
+
 			}
 
 
@@ -187,5 +199,38 @@ func DiagValidate(els []*bpmn_parser.Element,bpmn *bpmn_parser.Bpmn,proc *Condit
 
 		getFirstStep:=bpmn.ForwardElement(node)
 		DiagValidate(getFirstStep,bpmn,new_proc)
+	}
+}
+
+func SuccessEndValidation(els []*bpmn_parser.Element,bpmn *bpmn_parser.Bpmn,path * string){
+	var node string
+	//println(len(els))
+	Paths=append(Paths,*path)
+
+var newPath string
+	for _,el:=range els {
+
+		switch el.GetType() {
+		case "Gateway":
+			node=el.GetElement().(*bpmn_parser.ExclusiveGateway).ID
+		case "Activity":
+			node=el.GetElement().(*bpmn_parser.Task).ID
+		case "Event":
+			if endEvent,ok:=el.GetElement().(*bpmn_parser.EndEvent);ok {
+				node = endEvent.ID
+			}else if interEvent,ok:=el.GetElement().(*bpmn_parser.IntermediateEvent);ok {
+				node = interEvent.ID
+			}
+		}
+
+
+		newPath = *path + node + " , "
+
+		if el.GetElemType()=="End" || el.GetElemType()=="Out_Of_Commitment" {
+			 newPath+= el.GetElemType()
+		}
+
+		getFirstStep:=bpmn.ForwardElement(node)
+		SuccessEndValidation(getFirstStep,bpmn,&newPath)
 	}
 }
