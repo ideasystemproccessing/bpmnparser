@@ -74,14 +74,20 @@ func (self *Element) find() {
 				break
 			}
 		}
+		if self.bpmn.Process.StartEvent.ID == self.ElemId {
+			self.elemType = START_EVENT
+			self.Element = &self.bpmn.Process.StartEvent
+			self.outGoings = self.bpmn.Process.StartEvent.Outgoing
+		}
+	} else if self.GetType() == "StartEvent" {
+		if self.bpmn.Process.StartEvent.ID == self.ElemId {
+			self.elemType = START_EVENT
+			self.Element = &self.bpmn.Process.StartEvent
+			self.outGoings = self.bpmn.Process.StartEvent.Outgoing
 
-
-	} else if self.bpmn.Process.StartEvent.ID == self.ElemId {
-		self.elemType = START_EVENT
-		self.Element = &self.bpmn.Process.StartEvent
-		self.outGoings = self.bpmn.Process.StartEvent.Outgoing
-
+		}
 	}
+
 }
 func (self *Element) GetBPMN() *BPMN {
 	return self.bpmn
