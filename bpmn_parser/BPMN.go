@@ -22,7 +22,6 @@ type ExclusiveGateway struct {
 type SequenceFlow struct {
 	Text      string `xml:",chardata"`
 	ID        string `xml:"id,attr"`
-
 	RuleCondition     string `xml:"ruleCondition,attr"`
 	TestStatus        string `xml:"testStatus,attr"`
 	ExtensionElements string `xml:"extensionElements"`

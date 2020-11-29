@@ -1,4 +1,4 @@
-module xmlParser
+module git.ispfarm.com/mehdi/bpmnparser
 
 go 1.15
 

@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"git.ispfarm.com/mehdi/bpmnparser/bpmn_parser"
 	jsoniter "github.com/json-iterator/go"
 	"strings"
-	"xmlParser/bpmn_parser"
 )
 
 var Errors []string
@@ -197,7 +197,13 @@ func SuccessEndValidation(els []*bpmn_parser.Element, bpmn *bpmn_parser.Bpmn, pa
 
 	var newPath string
 	for _, el := range els {
-		newPath = *path + el.ElemId + " , "
+		if el.GetType()=="Activity"{
+			newPath = *path + el.ElemId+" Act " + " , "
+		}else {
+			newPath = *path + el.ElemId+ " , "
+
+		}
+
 		if el.GetElemType() == "End" {
 			newPath += el.GetElemType()
 		}
