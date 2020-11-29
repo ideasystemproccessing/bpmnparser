@@ -171,7 +171,6 @@ func DiagValidate(els []*bpmn_parser.Element, bpmn *bpmn_parser.Bpmn, proc *Cond
 
 		case "Event":
 
-
 		}
 
 		new_proc.ConditionParams = param
@@ -197,10 +196,10 @@ func SuccessEndValidation(els []*bpmn_parser.Element, bpmn *bpmn_parser.Bpmn, pa
 
 	var newPath string
 	for _, el := range els {
-		if el.GetType()=="Activity"{
-			newPath = *path + el.ElemId+" Act " + " , "
-		}else {
-			newPath = *path + el.ElemId+ " , "
+		if el.GetType() == "Activity" {
+			newPath = *path + el.ElemId + " Act " + " , "
+		} else {
+			newPath = *path + el.ElemId + " , "
 
 		}
 

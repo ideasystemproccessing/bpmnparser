@@ -12,22 +12,20 @@ type ExclusiveGateway struct {
 	RuleCondition     string   `xml:"ruleCondition,attr"`
 	TestStatus        string   `xml:"testStatus,attr"`
 	ExtensionElements string   `xml:"extensionElements"`
-	Incoming          []string   `xml:"incoming"`
+	Incoming          []string `xml:"incoming"`
 	Outgoing          []string `xml:"outgoing"`
-	Name     string `xml:"name,attr"`
-
+	Name              string   `xml:"name,attr"`
 }
 
-
 type SequenceFlow struct {
-	Text      string `xml:",chardata"`
-	ID        string `xml:"id,attr"`
+	Text              string `xml:",chardata"`
+	ID                string `xml:"id,attr"`
 	RuleCondition     string `xml:"ruleCondition,attr"`
 	TestStatus        string `xml:"testStatus,attr"`
 	ExtensionElements string `xml:"extensionElements"`
-	Name     string `xml:"name,attr"`
-	SourceRef string `xml:"sourceRef,attr"`
-	TargetRef string `xml:"targetRef,attr"`
+	Name              string `xml:"name,attr"`
+	SourceRef         string `xml:"sourceRef,attr"`
+	TargetRef         string `xml:"targetRef,attr"`
 }
 type TerminateEndEvent struct {
 	Text string `xml:",chardata"`
@@ -35,46 +33,43 @@ type TerminateEndEvent struct {
 }
 
 type EndEvent struct {
-	Text     string `xml:",chardata"`
-	ID       string `xml:"id,attr"`
-	RuleCondition     string `xml:"ruleCondition,attr"`
-	TestStatus        string `xml:"testStatus,attr"`
-	ExtensionElements string `xml:"extensionElements"`
-	Incoming          []string `xml:"incoming"`
-	Name     string `xml:"name,attr"`
+	Text                     string             `xml:",chardata"`
+	ID                       string             `xml:"id,attr"`
+	RuleCondition            string             `xml:"ruleCondition,attr"`
+	TestStatus               string             `xml:"testStatus,attr"`
+	ExtensionElements        string             `xml:"extensionElements"`
+	Incoming                 []string           `xml:"incoming"`
+	Name                     string             `xml:"name,attr"`
 	TerminateEventDefinition *TerminateEndEvent `xml:"terminateEventDefinition"`
-
 }
 type Task struct {
-	Text              string `xml:",chardata"`
-	ID                string `xml:"id,attr"`
-	RuleCondition     string `xml:"ruleCondition,attr"`
-	TestStatus        string `xml:"testStatus,attr"`
-	ExtensionElements string `xml:"extensionElements"`
+	Text              string   `xml:",chardata"`
+	ID                string   `xml:"id,attr"`
+	RuleCondition     string   `xml:"ruleCondition,attr"`
+	TestStatus        string   `xml:"testStatus,attr"`
+	ExtensionElements string   `xml:"extensionElements"`
 	Incoming          []string `xml:"incoming"`
-	Name     string `xml:"name,attr"`
-	Outgoing []string `xml:"outgoing"`
-
+	Name              string   `xml:"name,attr"`
+	Outgoing          []string `xml:"outgoing"`
 }
 type StartEvent struct {
-	RuleCondition     string `xml:"ruleCondition,attr"`
-	TestStatus        string `xml:"testStatus,attr"`
-	ExtensionElements string `xml:"extensionElements"`
-	Text     string `xml:",chardata"`
-	ID       string `xml:"id,attr"`
-	Name     string `xml:"name,attr"`
-	Outgoing []string `xml:"outgoing"`
-
+	RuleCondition     string   `xml:"ruleCondition,attr"`
+	TestStatus        string   `xml:"testStatus,attr"`
+	ExtensionElements string   `xml:"extensionElements"`
+	Text              string   `xml:",chardata"`
+	ID                string   `xml:"id,attr"`
+	Name              string   `xml:"name,attr"`
+	Outgoing          []string `xml:"outgoing"`
 }
 type IntermediateEvent struct {
-	Text              string `xml:",chardata"`
-	ID                string `xml:"id,attr"`
-	RuleCondition     string `xml:"ruleCondition,attr"`
-	TestStatus        string `xml:"testStatus,attr"`
-	ExtensionElements string `xml:"extensionElements"`
-	Incoming          []string `xml:"incoming"`
-	Name     string `xml:"name,attr"`
-	Outgoing []string `xml:"outgoing"`
+	Text                string   `xml:",chardata"`
+	ID                  string   `xml:"id,attr"`
+	RuleCondition       string   `xml:"ruleCondition,attr"`
+	TestStatus          string   `xml:"testStatus,attr"`
+	ExtensionElements   string   `xml:"extensionElements"`
+	Incoming            []string `xml:"incoming"`
+	Name                string   `xml:"name,attr"`
+	Outgoing            []string `xml:"outgoing"`
 	LinkEventDefinition struct {
 		Text string `xml:",chardata"`
 		ID   string `xml:"id,attr"`
@@ -93,13 +88,13 @@ type BPMN struct {
 	TargetNamespace string   `xml:"targetNamespace,attr"`
 	SchemaLocation  string   `xml:"schemaLocation,attr"`
 	Process         struct {
-		Text       string `xml:",chardata"`
-		ID         string `xml:"id,attr"`
-		StartEvent StartEvent `xml:"startEvent"`
-		ExclusiveGateway []ExclusiveGateway `xml:"exclusiveGateway"`
-		SequenceFlow []SequenceFlow `xml:"sequenceFlow"`
-		EndEvent []EndEvent `xml:"endEvent"`
-		Task []Task `xml:"task"`
+		Text                   string              `xml:",chardata"`
+		ID                     string              `xml:"id,attr"`
+		StartEvent             StartEvent          `xml:"startEvent"`
+		ExclusiveGateway       []ExclusiveGateway  `xml:"exclusiveGateway"`
+		SequenceFlow           []SequenceFlow      `xml:"sequenceFlow"`
+		EndEvent               []EndEvent          `xml:"endEvent"`
+		Task                   []Task              `xml:"task"`
 		IntermediateThrowEvent []IntermediateEvent `xml:"intermediateThrowEvent"`
 	} `xml:"process"`
 	BPMNDiagram struct {
@@ -149,13 +144,12 @@ type BPMN struct {
 	} `xml:"BPMNDiagram"`
 }
 
-
-
 type Bpmn struct {
-	refrence *BPMN
-	filePath string
+	reference *BPMN
+	filePath  string
 }
-func (self * Bpmn)loadBpmnFile() error{
+
+func (self *Bpmn) loadBpmnFile() error {
 	xmlFile, err := os.Open(self.filePath)
 	if err != nil {
 		return err
@@ -164,58 +158,55 @@ func (self * Bpmn)loadBpmnFile() error{
 	defer xmlFile.Close()
 
 	byteValue, _ := ioutil.ReadAll(xmlFile)
-	bpmn:=new(BPMN)
-	err=xml.Unmarshal(byteValue, bpmn)
-	if err !=nil {
+	bpmn := new(BPMN)
+	err = xml.Unmarshal(byteValue, bpmn)
+	if err != nil {
 		return err
 	}
-	self.refrence=bpmn
-	return  nil
+	self.reference = bpmn
+	return nil
 }
 
-func (self * Bpmn) GetBPMN(path string) (*BPMN,error) {
+func (self *Bpmn) GetBPMN(path string) (*BPMN, error) {
 	self.filePath = path
-	if self.refrence ==nil {
-		err:=self.loadBpmnFile()
+	if self.reference == nil {
+		err := self.loadBpmnFile()
 		if err != nil {
-			return nil,err
+			return nil, err
 		}
 	}
-	return self.refrence,nil
+	return self.reference, nil
 
 }
-func (self * Bpmn) GetStartElement() StartEvent {
-	return self.refrence.Process.StartEvent
+func (self *Bpmn) GetStartElement() StartEvent {
+	return self.reference.Process.StartEvent
 }
-func (self  * Bpmn) ForwardElement(elemId string) []*Element {
-	els:=make([]*Element,0)
-	el:=new(Element)
-	el.LoadObjElement(elemId,self.refrence)
+func (self *Bpmn) ForwardElement(elemId string) []*Element {
+	els := make([]*Element, 0)
+	el := new(Element)
+	el.LoadObjElement(elemId, self.reference)
 
-	for _,target:=range el.GetOutGoings() {
-		f:=new(Element)
-		f.LoadObjElement(target,self.refrence)
+	for _, target := range el.GetOutGoings() {
+		f := new(Element)
+		f.LoadObjElement(target, self.reference)
 
-		prevState:=f.Element.(*SequenceFlow)
+		prevState := f.Element.(*SequenceFlow)
 
-			elem:=new(Element)
-			elem.PrevState = prevState
-			elem.LoadObjElement(f.Element.(*SequenceFlow).TargetRef,self.refrence)
-			els=append(els,elem)
-
+		elem := new(Element)
+		elem.PrevState = prevState
+		elem.LoadObjElement(f.Element.(*SequenceFlow).TargetRef, self.reference)
+		els = append(els, elem)
 
 	}
 	return els
 }
 
-func NewBPMN(path string) (error , *Bpmn) {
-	b:=new(Bpmn)
-	_,err:=b.GetBPMN(path)
-	if err!=nil {
-		return err,nil
-	}else {
-		return nil , b
+func NewBPMN(path string) (error, *Bpmn) {
+	b := new(Bpmn)
+	_, err := b.GetBPMN(path)
+	if err != nil {
+		return err, nil
+	} else {
+		return nil, b
 	}
 }
-
-

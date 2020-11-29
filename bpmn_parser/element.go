@@ -5,12 +5,12 @@ import (
 )
 
 const (
-	GATEWAY     string = "Bool_Condition"
-	FLOW        string = "Arrow"
-	TASK        string = "Operation"
-	END_EVENT   string = "End"
-	START_EVENT string = "Start"
-	INTER_EVENT string = "Continue"
+	GATEWAY             string = "Bool_Condition"
+	FLOW                string = "Arrow"
+	TASK                string = "Operation"
+	END_EVENT           string = "End"
+	START_EVENT         string = "Start"
+	INTER_EVENT         string = "Continue"
 	TERMINATE_END_EVENT string = "Out_Of_Commitment"
 )
 
@@ -59,7 +59,7 @@ func (self *Element) find() {
 		for _, el := range self.bpmn.Process.EndEvent {
 			if el.ID == self.ElemId {
 				self.elemType = END_EVENT
-				if el.TerminateEventDefinition!=nil{
+				if el.TerminateEventDefinition != nil {
 					self.elemType = TERMINATE_END_EVENT
 				}
 				self.inComes = el.Incoming
