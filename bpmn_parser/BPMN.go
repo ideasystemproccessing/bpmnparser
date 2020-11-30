@@ -2,6 +2,7 @@ package bpmn_parser
 
 import (
 	"encoding/xml"
+	"errors"
 	"io/ioutil"
 	"os"
 )
@@ -166,6 +167,16 @@ func (self *Bpmn) loadBpmnFile() error {
 	self.reference = bpmn
 	return nil
 }
+func (self *Bpmn) loadXML(data []byte) error{
+	bpmn := new(BPMN)
+	err := xml.Unmarshal(data, bpmn)
+	if err != nil {
+		return err
+	}
+	self.reference = bpmn
+
+	return nil
+}
 
 func (self *Bpmn) GetBPMN(path string) (*BPMN, error) {
 	self.filePath = path
@@ -201,12 +212,23 @@ func (self *Bpmn) ForwardElement(elemId string) []*Element {
 	return els
 }
 
-func NewBPMN(path string) (error, *Bpmn) {
+func NewBPMN(data interface{}) (error, *Bpmn) {
 	b := new(Bpmn)
-	_, err := b.GetBPMN(path)
-	if err != nil {
-		return err, nil
-	} else {
-		return nil, b
+	if param,ok:=data.(string);ok {
+
+		_, err := b.GetBPMN(param)
+		if err != nil {
+			return err, nil
+		} else {
+			return nil, b
+		}
+	}else if param,ok:=data.([]byte);ok{
+		err := b.loadXML(param)
+		if err != nil {
+			return err, nil
+		} else {
+			return nil, b
+		}
 	}
+	return errors.New("Invalid Param type") , nil
 }

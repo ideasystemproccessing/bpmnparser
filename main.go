@@ -119,7 +119,7 @@ func main() {
 	SuccessEndValidation(getFirstStep, bpmn, &path)
 
 	for _, s := range Paths {
-		if strings.Contains(s, "End") {
+		if strings.Contains(s, bpmn_parser.END_EVENT) || strings.Contains(s, bpmn_parser.TERMINATE_END_EVENT) {
 			fmt.Println(s)
 		}
 	}
@@ -203,7 +203,7 @@ func SuccessEndValidation(els []*bpmn_parser.Element, bpmn *bpmn_parser.Bpmn, pa
 
 		}
 
-		if el.GetElemType() == "End" {
+		if el.GetElemType() == bpmn_parser.END_EVENT ||  el.GetElemType() == bpmn_parser.TERMINATE_END_EVENT{
 			newPath += el.GetElemType()
 		}
 		getFirstStep := bpmn.ForwardElement(el.ElemId)
