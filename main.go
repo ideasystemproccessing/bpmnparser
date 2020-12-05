@@ -96,6 +96,26 @@ func main() {
 	}
 
 	fmt.Println(string(v))
+	fmt.Println("======================================================================================")
+	seek:=proc
+	for{
+		println(seek.ElementType)
+		if seek.Next!=nil{
+			seek=seek.Next[0]
+		}else
+		if seek.TrueState!=nil{
+			seek=seek.TrueState
+
+		}else if seek.FalseState!=nil{
+			seek=seek.FalseState
+
+		}
+		if seek.Next==nil && seek.TrueState==nil && seek.FalseState==nil {
+			break
+		}
+	}
+
+
 
 	//====================================================
 	// Element Validation
