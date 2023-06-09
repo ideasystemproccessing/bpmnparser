@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"git.ispfarm.com/mehdi/bpmnparser/bpmn_parser"
+	"github.com/ideasystemproccessing/bpmnparser/bpmn_parser"
 	jsoniter "github.com/json-iterator/go"
 	"strings"
 )
